@@ -1,4 +1,4 @@
-import OrderForm from "@/components/order-form";
+import { OrderForm } from "@/routes/order-ai/_components/order-form";
 
 export default function OrderAI() {
   return (

@@ -34,7 +34,7 @@ type FormItemContextValue = {
 };
 
 const FormItemContext = React.createContext<FormItemContextValue>(
-  {} as FormItemContextValue,
+  {} as FormItemContextValue
 );
 
 function FormItem({ className, ...props }: React.ComponentProps<"div">) {
@@ -140,4 +140,4 @@ function FormMessage({ className, ...props }: React.ComponentProps<"p">) {
   );
 }
 
-export { useAppForm, useFormContext, useFieldContext, withForm };
+export { useAppForm, useFieldContext, useFormContext, withForm };

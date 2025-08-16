@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAppForm } from "@/components/ui/tanstack-form";
 import { Textarea } from "@/components/ui/textarea";
+import { inngest } from "@/server/inngest";
 import { useCallback } from "react";
 import { z } from "zod";
 
@@ -22,21 +23,25 @@ const FormSchema = z.object({
   ),
 });
 
-export default function OrderForm() {
+export function OrderForm() {
   const form = useAppForm({
     validators: { onChange: FormSchema },
     defaultValues: {
       question: "",
       orderId: "",
     },
-    onSubmit: ({ value }) => {
+    onSubmit: async ({ value }) => {
       console.log("Form submitted:", value);
-      // Here you would typically send the data to your API
-      alert(
-        `Question: ${value.question}\nOrder ID: ${
-          value.orderId || "Not provided"
-        }`
-      );
+      const test = await inngest.send({
+        name: "order-ai/query",
+        data: {
+          question: value.question,
+          orderId: value.orderId,
+          userId: "123",
+          sessionId: "123",
+        },
+      });
+      console.log("test", test);
     },
   });
 

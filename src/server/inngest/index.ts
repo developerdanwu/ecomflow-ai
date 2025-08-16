@@ -1,5 +1,5 @@
-import helloWorld from "./helloWorld";
+import { handleOrderAIQuery } from "./orderAI";
 
-export const functions = [helloWorld];
+export const functions = [handleOrderAIQuery];
 
 export { inngest } from "./client";
