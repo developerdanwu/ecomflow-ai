@@ -45,8 +45,7 @@ export const handleOrderAIQuery = inngest.createFunction(
     });
 
     return {
-      success: false,
-      result: result,
+      result,
     };
   }
 );
