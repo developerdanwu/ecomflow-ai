@@ -13,6 +13,7 @@
     "eval:dev": "evalite watch"
   },
   "dependencies": {
+    "react-error-boundary": "^6.0.0",
     "@ai-sdk/openai": "^2.0.15",
     "@ai-sdk/xai": "^2.0.7",
     "@inngest/realtime": "^0.3.1",

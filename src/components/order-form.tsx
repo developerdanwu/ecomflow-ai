@@ -1,7 +1,7 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { InngestStatus } from "@/components/ui/inngest-status";
 import { Input } from "@/components/ui/input";
 import { useAppForm } from "@/components/ui/tanstack-form";
 import { Textarea } from "@/components/ui/textarea";
@@ -9,9 +9,11 @@ import { fetchSubscriptionToken } from "@/lib/actions";
 import { EcomflowUIMessage } from "@/server/ai/types";
 import { orpc } from "@/server/orpc/client";
 import { useInngestSubscription } from "@inngest/realtime/hooks";
+import { useStore } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
 import { match } from "ts-pattern";
 import { z } from "zod";
+import { Badge } from "./ui/badge";
 import { MemoizedMarkdown } from "./ui/markdown";
 
 const ZFormSchema = z.object({
@@ -32,12 +34,11 @@ const ZFormSchema = z.object({
 });
 
 export function OrderForm() {
-  const { data } = useInngestSubscription({
+  const { latestData, state, error } = useInngestSubscription({
     refreshToken: fetchSubscriptionToken,
   });
-  const message = (
-    data.length > 0 ? data[data.length - 1].data.data : null
-  ) as EcomflowUIMessage | null;
+  const message = latestData?.data.data as EcomflowUIMessage | null;
+
   const askNolanAi = useMutation({
     ...orpc.nolanAi.ask.mutationOptions(),
   });
@@ -53,18 +54,20 @@ export function OrderForm() {
         question: value.question,
         orderId: value.orderId,
       });
+      form.reset();
     },
   });
+  const isSubmitting = useStore(form.store, (s) => s.isSubmitting);
 
   return (
     <div className="max-w-md mx-auto p-6 space-y-6">
       <div className="space-y-2">
-        <h1 className="text-2xl font-semibold">Order AI Assistant</h1>
+        <h1 className="text-2xl font-semibold">Nolan AI Assistant</h1>
         <p className="text-muted-foreground">
           Ask questions about your order or get general assistance.
         </p>
       </div>
-
+      <InngestStatus state={state} />
       <form.AppForm>
         <form
           className="space-y-6"
@@ -116,12 +119,29 @@ export function OrderForm() {
               </field.FormItem>
             )}
           />
-          <Button type="submit" className="w-full">
-            Ask AI Assistant
-          </Button>
+          <div className="flex gap-3">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                form.setFieldValue(
+                  "question",
+                  "What is the status of my order?"
+                );
+                form.setFieldValue("orderId", "297b2cc5e3c97637");
+              }}
+              className="flex-1"
+            >
+              Try Example
+            </Button>
+            <Button type="submit" disabled={isSubmitting} className="flex-1">
+              Ask AI Assistant
+            </Button>
+          </div>
         </form>
       </form.AppForm>
       <div>
+        {error && <div>Error occured while streaming: {error.message}</div>}
         {message
           ? message.parts.map((part, index) => {
               return match(part)

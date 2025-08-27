@@ -2,12 +2,6 @@ import { os } from "@orpc/server";
 import * as z from "zod";
 import { inngest } from "../inngest";
 
-const PlanetSchema = z.object({
-  id: z.number().int().min(1),
-  name: z.string(),
-  description: z.string().optional(),
-});
-
 export const askNolanAi = os
   .input(
     z.object({
@@ -23,15 +17,6 @@ export const askNolanAi = os
         orderId: input.orderId,
       },
     });
-    // your list code here
-    return [{ id: 1, name: "name" }];
-  });
-
-export const findPlanet = os
-  .input(PlanetSchema.pick({ id: true }))
-  .handler(async ({ input }) => {
-    // your find code here
-    return { id: 1, name: "name" };
   });
 
 export const router = {
