@@ -207,7 +207,11 @@ export function OrderForm() {
                 )
                 .otherwise(() => {
                   // not implemented for simplicity
-                  return <div>Not implemented</div>;
+                  return (
+                    <div key={`${message.id}-tool-${index}`}>
+                      Not implemented
+                    </div>
+                  );
                 });
             })
           : null}
